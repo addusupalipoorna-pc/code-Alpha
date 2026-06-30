@@ -1,0 +1,40 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Launch Frontend (Chrome)",
+      "url": "http://localhost:4173",
+      "webRoot": "${workspaceFolder}/frontend"
+    },
+    {
+      "type": "python",
+      "request": "launch",
+      "name": "Run Backend (Uvicorn)",
+      "module": "uvicorn",
+      "args": [
+        "backend.app:app",
+        "--reload",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Run Full App (Frontend + Backend)",
+      "configurations": [
+        "Run Backend (Uvicorn)",
+        "Launch Frontend (Chrome)"
+      ]
+    }
+  ]
+}
