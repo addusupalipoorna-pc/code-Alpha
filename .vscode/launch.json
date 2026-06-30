@@ -17,7 +17,7 @@
       "name": "Run Backend (Uvicorn)",
       "module": "uvicorn",
       "args": [
-        "app:app",
+        "backend.app:app",
         "--reload",
         "--host",
         "0.0.0.0",

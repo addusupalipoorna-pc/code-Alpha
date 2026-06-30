@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function GlobeLoader({ importFunc, placeholder }) {
+export default function GlobeLoader({ importFunc, placeholder, ...props }) {
   const [Component, setComponent] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +21,7 @@ export default function GlobeLoader({ importFunc, placeholder }) {
   return (
     <div className="glass-card p-4 rounded-xl">
       {Component ? (
-        <Component />
+        <Component {...props} />
       ) : (
         <div className="flex flex-col items-center justify-center gap-4">
           {placeholder || (

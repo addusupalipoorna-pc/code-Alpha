@@ -7,44 +7,6 @@ const api = axios.create({
   timeout: 20000,
 });
 
-/** Map app language codes to MyMemory / Google-style codes */
-function toMyMemoryCode(code) {
-  if (!code || code === 'auto') return 'Autodetect';
-  return code;
-}
-
-async function translateViaMyMemory({ sourceText, sourceLang, targetLang }) {
-  const src = toMyMemoryCode(sourceLang);
-  const tgt = toMyMemoryCode(targetLang);
-  const langpair = `${encodeURIComponent(src)}|${encodeURIComponent(tgt)}`;
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=${langpair}`;
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Translation service returned ${response.status}`);
-  }
-
-  const data = await response.json();
-  const translated = data?.responseData?.translatedText;
-  if (!translated) {
-    throw new Error(data?.responseDetails || 'No translation returned');
-  }
-
-  if (translated.includes('MYMEMORY WARNING') || translated.includes('QUOTA')) {
-    throw new Error('Translation quota reached. Try again in a moment.');
-  }
-
-  const start = performance.now();
-  return {
-    translated_text: translated,
-    source_lang: sourceLang,
-    target_lang: targetLang,
-    confidence: 'High',
-    elapsed_ms: Math.round(performance.now() - start),
-    provider: 'mymemory',
-  };
-}
-
 export async function translateText({ sourceText, sourceLang, targetLang }) {
   const payload = {
     text: sourceText,
@@ -56,12 +18,8 @@ export async function translateText({ sourceText, sourceLang, targetLang }) {
     const response = await api.post('/translate', payload);
     return { ...response.data, provider: 'backend' };
   } catch (backendError) {
-    try {
-      return await translateViaMyMemory({ sourceText, sourceLang, targetLang });
-    } catch (fallbackError) {
-      const detail = backendError?.response?.data?.detail || backendError?.message;
-      throw new Error(detail || fallbackError.message || 'Translation failed');
-    }
+    const detail = backendError?.response?.data?.detail || backendError?.message;
+    throw new Error(detail || 'Translation failed');
   }
 }
 
@@ -71,5 +29,32 @@ export async function getSupportedLanguages() {
     return response.data;
   } catch {
     return null;
+  }
+}
+
+export async function transcribeAudio(wavBlob, lang) {
+  const formData = new FormData();
+  formData.append('file', wavBlob, 'recording.wav');
+  
+  try {
+    const response = await api.post(`/transcribe?lang=${lang}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    const detail = error?.response?.data?.detail || error?.message;
+    throw new Error(detail || 'Transcription failed');
+  }
+}
+
+export async function subscribeNewsletter({ name, email, contact, password }) {
+  try {
+    const response = await api.post('/subscribe', { name, email, contact, password });
+    return response.data;
+  } catch (error) {
+    const detail = error?.response?.data?.detail || error?.message;
+    throw new Error(detail || 'Subscription failed');
   }
 }

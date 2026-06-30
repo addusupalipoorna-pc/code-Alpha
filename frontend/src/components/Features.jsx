@@ -1,38 +1,56 @@
-import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { FiMic, FiShield, FiVolume2, FiRepeat, FiFileText, FiClock, FiList, FiCloud } from 'react-icons/fi';
 
-export default function Features() {
-  const features = [
-    { title: 'Voice Translation', icon: FiMic },
-    { title: 'AI Accuracy Engine', icon: FiShield },
-    { title: 'Text To Speech', icon: FiVolume2 },
-    { title: 'Speech To Text', icon: FiRepeat },
-    { title: 'PDF Translation', icon: FiFileText },
-    { title: 'Real-Time Translation', icon: FiClock },
-    { title: 'Translation History', icon: FiList },
-    { title: 'Cloud Sync', icon: FiCloud },
-  ];
+const features = [
+  { title: 'Voice Translation', icon: FiMic, desc: 'Enterprise-grade voice translation for production workflows.' },
+  { title: 'AI Accuracy Engine', icon: FiShield, desc: 'Self-correcting AI accuracy engine for semantic alignment.' },
+  { title: 'Text To Speech', icon: FiVolume2, desc: 'High-fidelity natural speech synthesis in 100+ locales.' },
+  { title: 'Speech To Text', icon: FiRepeat, desc: 'Cross-browser recording with automatic background transcription.' },
+  { title: 'PDF Translation', icon: FiFileText, desc: 'Compile translations directly into formatted PDF reports.' },
+  { title: 'Real-Time Translation', icon: FiClock, desc: 'Translates as you type with instant debounced updates.' },
+  { title: 'Translation History', icon: FiList, desc: 'Interactive history log with timeline filters and favoriting.' },
+  { title: 'Cloud Sync', icon: FiCloud, desc: 'Sync settings and translation logs securely to the cloud.' },
+];
 
-  useEffect(() => {
-    // GSAP handles reveal animations; nothing required here
-  }, []);
+export default function Features() {
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.currentTarget.style.setProperty('--mouse-x', `${x}px`);
+    e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
+  };
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div id="features" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mt-12">
       {features.map((f, i) => {
         const Icon = f.icon;
         return (
-          <div key={f.title} className="feature-card reveal glass-card p-5" data-magnetic="28" role="article" aria-label={f.title} tabIndex={0} style={{ transitionDelay: `${i * 70}ms` }}>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.12), rgba(6,182,212,0.08))' }}>
-                <Icon className="text-cyan-200" size={20} aria-hidden />
+          <motion.div
+            key={f.title}
+            className="feature-card card-glow-border p-6 rounded-2xl bg-slate-950/40 border border-white/5 backdrop-blur-md relative overflow-hidden group cursor-pointer transition-all duration-300 hover:-translate-y-1.5"
+            onMouseMove={handleMouseMove}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: i * 0.08 }}
+            role="article"
+            aria-label={f.title}
+            tabIndex={0}
+          >
+            {/* Ambient hover light effect */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/0 via-cyan-500/0 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            
+            <div className="flex flex-col gap-4 relative z-10">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-slate-900 border border-white/10 group-hover:border-cyan-500/30 transition-colors duration-300">
+                <Icon className="text-cyan-400 group-hover:scale-110 transition-transform duration-300" size={22} aria-hidden />
               </div>
               <div>
-                <div className="text-lg font-semibold text-slate-100">{f.title}</div>
-                <p className="mt-1 text-sm text-slate-400">Enterprise-grade {f.title.toLowerCase()} for production workflows.</p>
+                <h3 className="text-base font-bold text-slate-100 group-hover:text-cyan-300 transition-colors duration-200">{f.title}</h3>
+                <p className="mt-2 text-xs text-slate-400 leading-relaxed">{f.desc}</p>
               </div>
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </div>

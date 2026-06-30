@@ -8,6 +8,8 @@ export default defineConfig({
     proxy: {
       '/translate': { target: 'http://127.0.0.1:8000', changeOrigin: true },
       '/languages': { target: 'http://127.0.0.1:8000', changeOrigin: true },
+      '/transcribe': { target: 'http://127.0.0.1:8000', changeOrigin: true },
+      '/subscribe': { target: 'http://127.0.0.1:8000', changeOrigin: true },
     },
   },
   build: {

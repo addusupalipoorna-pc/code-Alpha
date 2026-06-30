@@ -20,17 +20,27 @@ export default function LanguagesCarousel() {
   }, []);
 
   // pick a subset or all langs if available
-  const items = languages.slice(0, 40).map((l) => ({ code: l.code, name: l.name, native: l.native || l.name }));
+  const items = languages
+    .filter((l) => l.code !== 'auto')
+    .slice(0, 40)
+    .map((l) => ({
+      code: l.code,
+      name: l.name,
+      native: l.native || l.name,
+      flag: l.flag || '🏳️',
+    }));
 
   return (
     <div className="languages-carousel mt-6 w-full overflow-hidden">
       <div className="languages-track flex gap-4" ref={trackRef} aria-hidden>
         {items.concat(items).map((it, i) => (
           <div key={`${it.code}-${i}`} className="lang-card glass-card px-4 py-3 flex items-center gap-3">
-            <div className="flag" style={{ fontSize: 20 }}>{it.code === 'en' ? '🇺🇸' : it.code === 'te' ? '🇮🇳' : it.code === 'es' ? '🇪🇸' : '🏳️'}</div>
-            <div className="flex flex-col">
+            <div className="flag" style={{ fontSize: 20 }}>{it.flag}</div>
+            <div className="flex flex-col text-left">
               <span className="text-sm font-semibold">{it.name}</span>
-              <span className="text-xs text-slate-400">{it.native}</span>
+              {it.name.toLowerCase() !== it.native.toLowerCase() && (
+                <span className="text-xs text-slate-400">{it.native}</span>
+              )}
             </div>
           </div>
         ))}

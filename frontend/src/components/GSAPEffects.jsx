@@ -15,9 +15,7 @@ export default function GSAPEffects() {
         if (_gsap && _ScrollTrigger && active) {
           _gsap.registerPlugin(_ScrollTrigger);
 
-          // Hero reveal — stronger entrance with subtle scale and glow
-          _gsap.from('.hero-content', { y: 36, opacity: 0, duration: 1.1, ease: 'power3.out', filter: 'blur(8px)'});
-          _gsap.from('.hero-headline', { y: 8, opacity: 0, duration: 1.1, delay: 0.1, ease: 'power4.out', scale: 0.98, skewY: 1 });
+
 
           // Reveal items with .reveal on scroll
           _gsap.utils.toArray('.reveal').forEach((el) => {
@@ -38,19 +36,7 @@ export default function GSAPEffects() {
             });
           });
 
-          // Floating cards subtle parallax on scroll
-          _gsap.to('.floating-card', {
-            yPercent: -10,
-            stagger: 0.12,
-            ease: 'power1.out',
-            scrollTrigger: {
-              trigger: '.hero-section',
-              start: 'top top',
-              end: 'bottom top',
-              scrub: 0.8,
-              scroller: window,
-            },
-          });
+
 
           // Feature cards: stronger 3D entrance stagger
           _gsap.fromTo('.feature-card', { y: 36, opacity: 0, rotateX: 8, scale: 0.985 }, {
@@ -146,7 +132,6 @@ export default function GSAPEffects() {
       } catch (e) {}
       try { if (_gsap) {
         _gsap.killTweensOf('.feature-card');
-        _gsap.killTweensOf('.floating-card');
         _gsap.killTweensOf('.btn');
         _gsap.killTweensOf('.icon-micro');
       } } catch (e) {}
