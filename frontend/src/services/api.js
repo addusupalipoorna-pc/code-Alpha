@@ -22,7 +22,7 @@ export async function translateText({ sourceText, sourceLang, targetLang }) {
     
     // Client-side fallback using free MyMemory Translation API
     try {
-      const srcCode = sourceLang === 'auto' ? 'en' : sourceLang;
+      const srcCode = sourceLang === 'auto' ? 'autodetect' : sourceLang;
       const tgtCode = targetLang;
       const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=${srcCode}|${tgtCode}`;
       
