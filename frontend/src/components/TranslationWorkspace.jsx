@@ -120,6 +120,7 @@ export default function TranslationWorkspace({ history, setHistory }) {
   const lastHistoryKeyRef = useRef('');
   const voicesPrimedRef = useRef(false);
   const fileInputRef = useRef(null);
+  const utteranceRef = useRef(null);
 
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
@@ -506,6 +507,8 @@ export default function TranslationWorkspace({ history, setHistory }) {
 
     const locale = localeForCode(targetLang);
     const utterance = new SpeechSynthesisUtterance(translatedText);
+    utteranceRef.current = utterance; // Prevent garbage collection bug
+    
     utterance.lang = locale;
     utterance.rate = 0.95;
     utterance.pitch = 1;
@@ -518,15 +521,19 @@ export default function TranslationWorkspace({ history, setHistory }) {
       if (voice) utterance.voice = voice;
 
       utterance.onstart = () => setStatus('Playing translation…');
-      utterance.onend = () => setStatus('Speech finished');
+      utterance.onend = () => {
+        setStatus('Speech finished');
+        utteranceRef.current = null;
+      };
       utterance.onerror = (err) => {
         console.error('Speech error:', err);
         setStatus('Could not play speech.');
+        utteranceRef.current = null;
       };
 
       setTimeout(() => {
         synth.speak(utterance);
-      }, wasSpeaking ? 100 : 0);
+      }, wasSpeaking ? 150 : 0);
     };
 
     const voices = synth.getVoices();
